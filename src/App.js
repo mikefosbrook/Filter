@@ -3,6 +3,7 @@ import './App.css';
 import Data from './data/search-data.json'; // ideally would mimic server request and cover outcome i.e., error, loading, success
 import DocumentFilter from './components/DocumentFilter';
 import DocumentList from './components/DocumentList';
+import Pagination from './components/Pagination';
 
 function App() {
 
@@ -10,6 +11,8 @@ function App() {
     console.log('I run once');
     return Data.documents;
   } );
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(10);
 
   // The key for each filter type in the Document JSON data has no corresponding value to the navigators
   // We can't rely on the order of the navigators, as they appear in a different order to the filter types
@@ -32,13 +35,26 @@ function App() {
     setFilter(filteredResuts);
   };
   
+  // Get current posts
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = documents.slice(indexOfFirstPost, indexOfLastPost);
+
+  // Change page
+  const paginate = pageNumber => setCurrentPage(pageNumber);
+
   return (
     <div className="App">
       <DocumentFilter 
         navigators={Data.navigators}
         handleSelect={handleSelect} 
       /> 
-      <DocumentList documents={documents} />       
+      <DocumentList documents={currentPosts} />
+      <Pagination
+        postsPerPage={postsPerPage}
+        totalPosts={documents.length}
+        paginate={paginate}
+      />       
     </div>
   );
 }
