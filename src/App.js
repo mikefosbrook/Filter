@@ -8,9 +8,8 @@ import Pagination from './components/Pagination';
 function App() {
 
   const [documents, setFilter] = useState(() => {
-    console.log('I run once');
     return Data.documents;
-  } );
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(10);
 
@@ -21,18 +20,22 @@ function App() {
     ndt : 'niceDocType',
     nat : 'niceAdviceType',
     ngt : 'niceGuidanceType',
-  }  
+  }
 
   const handleSelect = (event) => {
+
     const filterValue = event.target.value;
     const filterKey = filterNavigators[event.target.dataset.navigator]; // niceDocType, niceAdviceType or niceGuidanceType
-    const filteredResuts = Data.documents.filter( (document) => (document[filterKey].includes(filterValue) ) );
+    const filteredResuts = Data.documents.filter( (document) => (document[filterKey].includes(filterValue)) );  
 
-    console.log(typeof Data.documents);
-    console.log(documents)
-    console.log(filteredResuts);
+      if(filterValue === '' ) {
+        setFilter(Data.documents)
+        
+      } else {
+        setFilter(filteredResuts);
+      }
+      setCurrentPage(1)
 
-    setFilter(filteredResuts);
   };
   
   // Get current posts
@@ -44,24 +47,27 @@ function App() {
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
   return (
-    <div className="App">
-      <DocumentFilter 
-        navigators={Data.navigators}
-        handleSelect={handleSelect} 
-      /> 
-      <DocumentList documents={currentPosts} />
-      <Pagination
-        postsPerPage={postsPerPage}
-        totalPosts={documents.length}
-        paginate={paginate}
-      />       
-    </div>
+      <div className="container">
+        <div className="grid mt--d">
+          <div data-g="12">
+          <h1>Filters</h1>
+          <DocumentFilter
+            navigators={Data.navigators}
+            handleSelect={handleSelect}
+          />
+          <p className="lead">{documents.length} documents</p>
+          <DocumentList documents={currentPosts} />
+          <Pagination
+            postsPerPage={postsPerPage}
+            totalPosts={documents.length}
+            paginate={paginate}
+            currentPage={currentPage}
+          />
+          </div>
+        </div>
+      </div>
   );
 }
-
-//show document count x of 100 (documents.length)
-
-//navigators can be used to set the names in the options to seperate the presentation code from the data
 
 // A good test would be to see if the Data contained non existent modifiers/ones with spelling mistakes in the navigators array (main filter options)
 

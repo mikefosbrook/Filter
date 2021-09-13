@@ -6,19 +6,18 @@ const DocumentFilter = ({ navigators, handleSelect }) => {
   // In terms of User Experience, it could be beneficial to only return filter options that exist, unless it was intended that a user can search for things to see they don't exist - but it would be better if these were shown but disabled.
   // As an improvement, get unique arrays for each select and add disabled="disabled" to each option.
   return (
-    <div className="filter-list">
-      <h1>Filter options</h1>
+    <div className="filter-list" role="search">
       {navigators.map((navigator, i) => (
         <div className="filter-wrapper" key={i}>
-          <label htmlFor={`id_select_${navigator.shortName}`}>
-            {navigator.displayName}
+          <label htmlFor={`id_select_${navigator.shortName}`} aria-label={`Filter documents by ${navigator.displayName}`}>
+            {navigator.displayName} 
           </label>
           <select
             onChange={handleSelect}
             id={`id_select_${navigator.shortName}`}
             data-navigator={navigator.shortName}
           >
-            <option value=""></option>
+            <option value="">None selected</option>
             {navigator.modifiers.map((modifier, j) => (
               <option value={modifier.displayName} key={j}>
                 {modifier.displayName}
@@ -27,8 +26,9 @@ const DocumentFilter = ({ navigators, handleSelect }) => {
           </select>
         </div>
       ))}
+      <hr/>
     </div>
-    // a Submit button rather than on change would be more efficient in the event of there being masses of data, but not having to press submiit provides instant feedback
+    // a Submit button rather than on change would be more efficient in the event of there being masses of data, but not having to press submit provides instant feedback
     // slight issue in using reset, in so far as keyboad navigation might inadvertantly clear the selections.
   );
 };
